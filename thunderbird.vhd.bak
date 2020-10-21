@@ -1,0 +1,60 @@
+entity Thunderbird is
+Port(
+ck : IN BIT;
+SW : IN bit_vector(1 DOWNTO 0);
+LEDR : BUFFER bit_vector(9 DOWNTO 7);
+LEDG : BUFFER bit_vector(2 DOWNTO 0));
+CLOCK_50 : IN bit;
+end Thunderbird;
+
+architecture rtl of Thunderbird IS
+Begin
+	abc: process(sw, ck)
+		Begin
+		IF (ck'EVENT and ck ='1') THEN
+			IF SW(1 DOWNTO 0)= "01" THEN
+				LEDG(2 DOWNTO 0) <= "000";
+				LEDR(9 DOWNTO 7) <= "000";
+					CASE LEDG(2 DOWNTO 0) IS
+						WHEN "000" => LEDG(2 DOWNTO 0) <= "001";
+						WHEN "001" => LEDG(2 DOWNTO 0) <= "011";
+						WHEN "011" => LEDG(2 DOWNTO 0) <= "111";
+						WHEN "111" => LEDG(2 DOWNTO 0) <= "000";
+						WHEN others => LEDG(2 DOWNTO 0) <= "000";
+					END CASE;
+			ELSIF(SW(1 DOWNTO 0)= "10") THEN
+				LEDR(9 DOWNTO 7) <= "000";
+				LEDG(2 DOWNTO 0) <= "000";
+					CASE LEDR(9 DOWNTO 7) IS
+						WHEN "000" => LEDR(9 DOWNTO 7) <= "001";
+						WHEN "001" => LEDR(9 DOWNTO 7) <= "011";
+						WHEN "011" => LEDR(9 DOWNTO 7) <= "111";
+						WHEN "111" => LEDR(9 DOWNTO 7) <= "000";
+						WHEN others => LEDR(9 DOWNTO 7) <= "000";
+					END CASE;
+			ELSIF(SW(1 DOWNTO 0)= "11") THEN
+				LEDR(9 DOWNTO 7) <= "000";
+				LEDG(2 DOWNTO 0) <= "000";
+					CASE LEDR(9 DOWNTO 7) IS
+						WHEN "000" => LEDR(9 DOWNTO 7) <= "001";
+										  LEDG(2 DOWNTO 0) <= "001";
+						WHEN "001" => LEDR(9 DOWNTO 7) <= "011";
+										  LEDG(2 DOWNTO 0) <= "011";						
+						WHEN "011" => LEDR(9 DOWNTO 7) <= "111";
+										  LEDG(2 DOWNTO 0) <= "111";						
+						WHEN "111" => LEDR(9 DOWNTO 7) <= "000";
+										  LEDG(2 DOWNTO 0) <= "000";						
+						WHEN others => LEDR(9 DOWNTO 7) <= "000";
+										   LEDG(2 DOWNTO 0) <= "000";						
+					END CASE;
+			 ELSIF(SW(1 DOWNTO 0)= "00") THEN
+				LEDR(9 DOWNTO 7) <= "000";
+				LEDG(2 DOWNTO 0) <= "000";
+			END IF;
+			END IF;
+			END process abc;
+			end rtl;
+
+--Com o uso dos comando IF e ELSIF é feito a leitura das chaves SW para identificar o que deve ser feito. 
+--Achando o criterio usa-se o comando CASE para variar os LEDS de acordo com seu estado anterior, 
+--passando pelos estados definidos em sala
